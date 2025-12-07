@@ -7,7 +7,7 @@ export const APP_CONFIG = {
     MAINTENANCE_MODE: false,
 
     // Logo Configuration
-    logo: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png", // Professional Globe/People Icon
+    logo: "https://www2.0zz0.com/2025/12/07/14/900974284.png", // Professional Globe/People Icon
 
     // General Site Info
     siteName: {
@@ -17,7 +17,7 @@ export const APP_CONFIG = {
     
     // Contact Information
     contact: {
-        phone: '0500000000',
+        phone: '+966570938053',
         email: 'info@Al-Rayan.net',
         address: {
             ar: 'الرياض، طريق الملك فهد، العليا',
@@ -32,7 +32,7 @@ export const APP_CONFIG = {
         facebook: '#',
         twitter: '#',
         instagram: '#',
-        whatsapp: 'https://wa.me/966500000000'
+        whatsapp: 'https://wa.me/966570938053'
     },
 
     // Theme Colors (matched with Tailwind config for consistency in JS logic)

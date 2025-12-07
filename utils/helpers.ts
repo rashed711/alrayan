@@ -5,7 +5,7 @@
  */
 export const getServiceImage = (id: number): string => {
     switch(id) {
-      case 1: return "https://images.unsplash.com/photo-1584622050111-993a426fbf0a?auto=format&fit=crop&q=80&w=1200"; // Maid
+      case 1: return "https://cdn.dubaiclean.com/uploads/2025/01/can-i-hire-a-maid-without-agency-in-dubai-3.webp"; // Maid
       case 2: return "https://images.unsplash.com/photo-1577412647305-991150c7d163?auto=format&fit=crop&q=80&w=1200"; // Cook
       case 3: return "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=1200"; // Nanny
       case 4: return "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&q=80&w=1200"; // Elderly
