@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
 import Hero from './components/Hero';
@@ -21,7 +21,25 @@ import { Language, Article, Service } from './types';
 function App() {
   // Global State
   const [lang, setLang] = useState<Language>('ar');
-  const [activeTab, setActiveTab] = useState('home');
+  
+  // Helper to extract valid tab from URL robustly
+  const getTabFromUrl = () => {
+    if (typeof window === 'undefined') return 'home';
+    
+    // Split path by '/' and filter out empty strings
+    // This handles cases like /about, /about/, /repo/about, etc.
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    
+    // Get the last segment
+    const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : 'home';
+    
+    const validTabs = ['about', 'services', 'contact', 'articles', 'backend'];
+    return validTabs.includes(lastSegment) ? lastSegment : 'home';
+  };
+
+  // Initialize activeTab based on current URL path
+  const [activeTab, setActiveTab] = useState(getTabFromUrl);
+
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   
@@ -30,6 +48,34 @@ function App() {
   const [showContent, setShowContent] = useState(true);
 
   const isAr = lang === 'ar';
+
+  // Handle Browser Back/Forward Buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const newTab = getTabFromUrl();
+      setActiveTab(newTab);
+      
+      // Clear selections if returning to main pages
+      if (!['article', 'service'].includes(newTab)) {
+        setSelectedArticle(null);
+        setSelectedService(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Safety Timeout: Force loading to false if it gets stuck
+  useEffect(() => {
+    if (isLoading) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        setShowContent(true);
+      }, 2000); // Reduced to 2 seconds for snappier feel
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
 
   // Handle Maintenance Mode
   if (APP_CONFIG.MAINTENANCE_MODE) {
@@ -49,6 +95,21 @@ function App() {
     setIsLoading(true);
     setShowContent(false);
 
+    // Update URL History
+    if (tab !== 'article' && tab !== 'service') {
+        // Construct new URL preserving base path if possible, or relative
+        const url = tab === 'home' ? './' : `./${tab}`;
+        // Using pushState with a relative path works better for subdirectories
+        // But for absolute clarity in this demo, let's try to simulate the path
+        // We won't force a hard reload, just a state push
+        try {
+           window.history.pushState({}, '', tab === 'home' ? '/' : `/${tab}`);
+        } catch (e) {
+           // Fallback for some environments
+           console.log('Navigation updated state only');
+        }
+    }
+
     setTimeout(() => {
         setActiveTab(tab);
         
@@ -61,6 +122,7 @@ function App() {
 
         window.scrollTo(0, 0);
         
+        // Short delay to allow render before fading in
         setTimeout(() => {
             setIsLoading(false);
             setShowContent(true);

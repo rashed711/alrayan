@@ -232,8 +232,8 @@ const Hero: React.FC<HeroProps> = ({ lang, settings, onNavigate }) => {
               {/* Dual Orbit Visualization - RESPONSIVE CONTAINER */}
               <div className="w-full md:w-2/3 h-[320px] sm:h-[400px] md:h-[450px] relative flex items-center justify-center perspective-1000 overflow-hidden md:overflow-visible">
                   
-                  {/* SCALING WRAPPER: Ensures it fits on mobile without overflow */}
-                  <div className="relative flex items-center justify-center transform scale-[0.45] sm:scale-75 md:scale-100 origin-center">
+                  {/* SCALING WRAPPER: Increased scale to 0.85 on mobile for larger flags */}
+                  <div className="relative flex items-center justify-center transform scale-[0.85] sm:scale-75 md:scale-100 origin-center">
 
                       {/* Central Globe Core */}
                       <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-600 to-primary relative z-20 shadow-[0_0_60px_rgba(50,130,184,0.6)] flex items-center justify-center border border-white/20">
@@ -266,11 +266,13 @@ const Hero: React.FC<HeroProps> = ({ lang, settings, onNavigate }) => {
                                         className="absolute flex flex-col items-center justify-center transform -translate-x-1/2 -translate-y-1/2 animate-spin-slower" // Counter rotate
                                         style={{ left: `${left}%`, top: `${top}%` }}
                                       >
-                                          <div className="w-10 h-10 rounded-full bg-white shadow-lg border-2 border-white overflow-hidden hover:scale-125 transition-transform duration-300 relative z-10">
+                                          {/* INCREASED SIZE: w-16 h-16 on mobile (was w-14) */}
+                                          <div className="w-16 h-16 md:w-10 md:h-10 rounded-full bg-white shadow-lg border-2 border-white overflow-hidden hover:scale-125 transition-transform duration-300 relative z-10">
                                             <img src={`https://flagcdn.com/w80/${country.code}.png`} alt={isAr ? country.nameAr : country.nameEn} className="w-full h-full object-cover" />
                                           </div>
                                           <div className="mt-1 px-1.5 py-0.5 bg-tertiary/80 backdrop-blur-sm rounded-md shadow-sm">
-                                              <span className="text-[9px] text-white font-bold whitespace-nowrap">{isAr ? country.nameAr : country.nameEn}</span>
+                                              {/* INCREASED TEXT: text-xs on mobile */}
+                                              <span className="text-xs md:text-[9px] text-white font-bold whitespace-nowrap">{isAr ? country.nameAr : country.nameEn}</span>
                                           </div>
                                       </div>
                                   );
@@ -299,11 +301,13 @@ const Hero: React.FC<HeroProps> = ({ lang, settings, onNavigate }) => {
                                         className="absolute flex flex-col items-center justify-center transform -translate-x-1/2 -translate-y-1/2 animate-spin-reverse-super-slow" // Counter rotate
                                         style={{ left: `${left}%`, top: `${top}%` }}
                                       >
-                                          <div className="w-14 h-14 rounded-full bg-white shadow-xl border-[3px] border-white overflow-hidden hover:scale-125 transition-transform duration-300 relative z-10">
+                                          {/* INCREASED SIZE: w-24 h-24 on mobile (was w-20) */}
+                                          <div className="w-24 h-24 md:w-14 md:h-14 rounded-full bg-white shadow-xl border-[3px] border-white overflow-hidden hover:scale-125 transition-transform duration-300 relative z-10">
                                             <img src={`https://flagcdn.com/w80/${country.code}.png`} alt={isAr ? country.nameAr : country.nameEn} className="w-full h-full object-cover" />
                                           </div>
                                           <div className="mt-2 px-2.5 py-1 bg-black/60 backdrop-blur-sm rounded-full border border-white/20 shadow-lg">
-                                              <span className="text-[10px] md:text-xs text-white font-bold whitespace-nowrap">{isAr ? country.nameAr : country.nameEn}</span>
+                                              {/* INCREASED TEXT: text-sm on mobile */}
+                                              <span className="text-sm md:text-xs text-white font-bold whitespace-nowrap">{isAr ? country.nameAr : country.nameEn}</span>
                                           </div>
                                       </div>
                                   );
