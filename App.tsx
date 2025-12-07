@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
 import Hero from './components/Hero';
@@ -13,101 +12,26 @@ import AboutPage from './components/AboutPage';
 import ServicesPage from './components/ServicesPage';
 import ArticlesPage from './components/ArticlesPage';
 import ContactPage from './components/ContactPage';
-import ScrollReveal from './components/ScrollReveal'; // Import the new component
+import ScrollReveal from './components/ScrollReveal';
+import { useNavigation } from './hooks/useNavigation';
 import { mockSettings, mockServices, mockArticles } from './data/mockData';
 import { APP_CONFIG } from './constants';
 import { Language, Article, Service } from './types';
 
 function App() {
-  // Global State
+  // Global Language State
   const [lang, setLang] = useState<Language>('ar');
-  
-  // --- Enhanced URL Parsing Logic ---
-  const getInitialStateFromUrl = () => {
-    if (typeof window === 'undefined') return { tab: 'home', service: null, article: null };
-
-    const path = window.location.pathname;
-    // Split path into segments and remove empty strings
-    const segments = path.split('/').filter(Boolean);
-
-    // 1. Check for Service Detail (e.g., /service/1)
-    // We look for the 'service' keyword and check if the NEXT segment is a number
-    const serviceIndex = segments.indexOf('service');
-    if (serviceIndex !== -1 && segments[serviceIndex + 1]) {
-        const id = parseInt(segments[serviceIndex + 1]);
-        const service = mockServices.find(s => s.id === id);
-        if (service) return { tab: 'service', service: service, article: null };
-    }
-
-    // 2. Check for Article Detail (e.g., /article/1)
-    const articleIndex = segments.indexOf('article');
-    if (articleIndex !== -1 && segments[articleIndex + 1]) {
-        const id = parseInt(segments[articleIndex + 1]);
-        const article = mockArticles.find(a => a.id === id);
-        if (article) return { tab: 'article', service: null, article: article };
-    }
-
-    // 3. Check for Standard Pages (about, contact, etc.)
-    // We iterate backwards to find the most relevant "tab" name in the URL
-    // This handles subdirectories like /my-repo/about correctly
-    const validTabs = ['about', 'services', 'contact', 'articles', 'backend', 'home'];
-    for (let i = segments.length - 1; i >= 0; i--) {
-        if (validTabs.includes(segments[i])) {
-            return { tab: segments[i], service: null, article: null };
-        }
-    }
-
-    // Default to home
-    return { tab: 'home', service: null, article: null };
-  };
-
-  // Initialize state based on the URL analysis
-  const initialState = getInitialStateFromUrl();
-
-  const [activeTab, setActiveTab] = useState(initialState.tab);
-  const [selectedService, setSelectedService] = useState<Service | null>(initialState.service);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(initialState.article);
-  
-  // Transitions
-  const [isLoading, setIsLoading] = useState(false);
-  const [showContent, setShowContent] = useState(true);
-
   const isAr = lang === 'ar';
 
-  // Handle Browser Back/Forward Buttons
-  useEffect(() => {
-    const handlePopState = () => {
-      // Re-analyze URL when user presses Back/Forward
-      const newState = getInitialStateFromUrl();
-      
-      setIsLoading(true);
-      setShowContent(false);
-
-      setTimeout(() => {
-          setActiveTab(newState.tab);
-          setSelectedService(newState.service);
-          setSelectedArticle(newState.article);
-          
-          window.scrollTo(0, 0);
-          setIsLoading(false);
-          setShowContent(true);
-      }, 300);
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  // Safety Timeout: Force loading to false if it gets stuck
-  useEffect(() => {
-    if (isLoading) {
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-        setShowContent(true);
-      }, 2000); // Reduced to 2 seconds for snappier feel
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
+  // Use Custom Hook for Routing & State Management
+  const { 
+    activeTab, 
+    selectedService, 
+    selectedArticle, 
+    isLoading, 
+    showContent, 
+    navigate 
+  } = useNavigation();
 
   // Handle Maintenance Mode
   if (APP_CONFIG.MAINTENANCE_MODE) {
@@ -120,65 +44,10 @@ function App() {
     );
   }
 
-  // Navigation Logic
-  const handleNavigation = (tab: string, item?: Article | Service | null) => {
-    // Prevent reloading same tab/item
-    if (tab === activeTab && !item) return;
-    if (tab === 'service' && selectedService?.id === (item as Service)?.id) return;
-    if (tab === 'article' && selectedArticle?.id === (item as Article)?.id) return;
-
-    setIsLoading(true);
-    setShowContent(false);
-
-    // Update URL History
-    let newUrl = '/';
-    
-    // Construct the correct URL based on the action
-    if (tab === 'home') {
-        newUrl = './'; // Relative path for home
-    } else if (tab === 'service' && item) {
-        newUrl = `./service/${item.id}`; // Deep link for service
-    } else if (tab === 'article' && item) {
-        newUrl = `./article/${item.id}`; // Deep link for article
-    } else {
-        newUrl = `./${tab}`; // Standard page link
-    }
-
-    try {
-        // Use pushState with the constructed URL
-        // We use relative paths (./) to play nicely with subdirectories if possible,
-        // but for deep links, we might need to handle the base path carefully in a real deployment.
-        // For this demo, we assume the router handles it via the browser URL bar.
-        const state = { tab, itemId: item?.id };
-        window.history.pushState(state, '', newUrl);
-    } catch (e) {
-        console.log('Navigation updated state only (URL update failed)');
-    }
-
-    setTimeout(() => {
-        setActiveTab(tab);
-        
-        if (tab === 'article') setSelectedArticle(item as Article);
-        else if (tab === 'service') setSelectedService(item as Service);
-        else {
-            setSelectedArticle(null);
-            setSelectedService(null);
-        }
-
-        window.scrollTo(0, 0);
-        
-        // Short delay to allow render before fading in
-        setTimeout(() => {
-            setIsLoading(false);
-            setShowContent(true);
-        }, 300);
-    }, 600);
-  };
-
-  // Helper Wrappers for Navigation
-  const handleArticleClick = (article: Article) => handleNavigation('article', article);
-  const handleServiceClick = (service: Service) => handleNavigation('service', service);
-  const handleBack = (target: string) => handleNavigation(target);
+  // Helper Wrappers for Navigation to match component props
+  const handleArticleClick = (article: Article) => navigate('article', article);
+  const handleServiceClick = (service: Service) => navigate('service', service);
+  const handleBack = (target: string) => navigate(target);
 
   // Content Renderer
   const renderContent = () => {
@@ -211,7 +80,7 @@ function App() {
         default:
             return (
                 <div className={contentClass}>
-                  <Hero lang={lang} settings={mockSettings} onNavigate={handleNavigation} />
+                  <Hero lang={lang} settings={mockSettings} onNavigate={navigate} />
 
                   {/* Services Section */}
                   <div className="py-24 bg-white relative overflow-hidden">
@@ -243,7 +112,7 @@ function App() {
                                     <ServiceCard 
                                         service={service} 
                                         lang={lang} 
-                                        index={0} // Index handled by ScrollReveal delay now
+                                        index={0} // Index handled by ScrollReveal delay
                                         onClick={handleServiceClick}
                                     />
                                 </ScrollReveal>
@@ -254,7 +123,7 @@ function App() {
                     <div className="text-center mt-12 max-w-7xl mx-auto px-4">
                         <ScrollReveal animation="zoom-in" delay={600}>
                           <button 
-                          onClick={() => handleNavigation('services')}
+                          onClick={() => navigate('services')}
                           className="inline-flex items-center gap-2 text-tertiary font-bold hover:text-primary transition-colors border-b-2 border-tertiary pb-1"
                           >
                               {isAr ? 'عرض جميع الخدمات' : 'View All Services'}
@@ -264,7 +133,7 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Portfolio Section (New) */}
+                  {/* Portfolio Section */}
                   <Portfolio lang={lang} />
 
                   {/* Blog Section */}
@@ -284,7 +153,7 @@ function App() {
                               </p>
                             </div>
                             <button 
-                              onClick={() => handleNavigation('articles')}
+                              onClick={() => navigate('articles')}
                               className="hidden md:flex items-center gap-2 text-white bg-tertiary px-6 py-3 rounded-full font-bold hover:bg-primary transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                             >
                                 {isAr ? 'عرض كل المقالات' : 'View All Articles'} <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
@@ -299,7 +168,7 @@ function App() {
                               article={article} 
                               lang={lang} 
                               onClick={handleArticleClick}
-                              index={0} // Animation handled by ScrollReveal
+                              index={0}
                             />
                           </ScrollReveal>
                         ))}
@@ -307,7 +176,7 @@ function App() {
                       
                        <div className="md:hidden mt-10 text-center">
                           <button 
-                             onClick={() => handleNavigation('articles')}
+                             onClick={() => navigate('articles')}
                              className="text-white bg-tertiary px-6 py-3 rounded-full font-bold shadow-lg w-full"
                           >
                               {isAr ? 'عرض كل المقالات' : 'View All Articles'}
@@ -323,7 +192,7 @@ function App() {
   return (
     <>
       <LoadingScreen isLoading={isLoading} lang={lang} />
-      <Layout lang={lang} setLang={setLang} activeTab={activeTab} onNavigate={handleNavigation}>
+      <Layout lang={lang} setLang={setLang} activeTab={activeTab} onNavigate={navigate}>
         {renderContent()}
       </Layout>
     </>

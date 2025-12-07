@@ -29,3 +29,14 @@ export interface Settings {
 }
 
 export type Language = 'ar' | 'en';
+
+// Define strict Page types for routing safety
+export type Page = 
+  | 'home' 
+  | 'about' 
+  | 'services' 
+  | 'contact' 
+  | 'articles' 
+  | 'backend' 
+  | 'service' 
+  | 'article';
