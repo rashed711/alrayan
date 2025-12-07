@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import LoadingScreen from './components/LoadingScreen';
 import Hero from './components/Hero';
 import ServiceCard from './components/ServiceCard';
+import Portfolio from './components/Portfolio';
 import ArticleCard from './components/ArticleCard';
 import ArticleDetail from './components/ArticleDetail';
 import ServiceDetail from './components/ServiceDetail';
@@ -12,6 +13,7 @@ import AboutPage from './components/AboutPage';
 import ServicesPage from './components/ServicesPage';
 import ArticlesPage from './components/ArticlesPage';
 import ContactPage from './components/ContactPage';
+import ScrollReveal from './components/ScrollReveal'; // Import the new component
 import { mockSettings, mockServices, mockArticles } from './data/mockData';
 import { APP_CONFIG } from './constants';
 import { Language, Article, Service } from './types';
@@ -109,80 +111,90 @@ function App() {
                      <div className="absolute top-0 left-0 w-64 h-64 bg-secondary/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
                      <div className="absolute bottom-0 right-0 w-96 h-96 bg-tertiary/5 rounded-full translate-x-1/2 translate-y-1/2"></div>
 
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-12">
-                      <div className="text-center animate-fade-in-up">
-                        <h2 className="text-sm text-tertiary font-bold tracking-wide uppercase mb-2 flex items-center justify-center gap-2">
-                          <span className="w-8 h-[2px] bg-tertiary inline-block"></span>
-                          {isAr ? 'خدماتنا' : 'Our Services'}
-                          <span className="w-8 h-[2px] bg-tertiary inline-block"></span>
-                        </h2>
-                        <h3 className="text-3xl md:text-5xl font-extrabold text-primary mb-4">
-                          {isAr ? 'حلول استقدام شاملة' : 'Comprehensive Recruitment Solutions'}
-                        </h3>
-                        <p className="max-w-2xl mx-auto text-gray-500">
-                             {isAr ? 'نقدم مجموعة واسعة من الخدمات لتلبية جميع احتياجاتك' : 'We offer a wide range of services to meet all your needs'}
-                        </p>
+                    <ScrollReveal animation="fade-up">
+                      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-12">
+                        <div className="text-center">
+                          <h2 className="text-sm text-tertiary font-bold tracking-wide uppercase mb-2 flex items-center justify-center gap-2">
+                            <span className="w-8 h-[2px] bg-tertiary inline-block"></span>
+                            {isAr ? 'خدماتنا' : 'Our Services'}
+                            <span className="w-8 h-[2px] bg-tertiary inline-block"></span>
+                          </h2>
+                          <h3 className="text-3xl md:text-5xl font-extrabold text-primary mb-4">
+                            {isAr ? 'حلول استقدام شاملة' : 'Comprehensive Recruitment Solutions'}
+                          </h3>
+                          <p className="max-w-2xl mx-auto text-gray-500">
+                               {isAr ? 'نقدم مجموعة واسعة من الخدمات لتلبية جميع احتياجاتك' : 'We offer a wide range of services to meet all your needs'}
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    </ScrollReveal>
 
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {mockServices.map((service, index) => (
-                                <div key={service.id} className="h-full">
+                                <ScrollReveal key={service.id} animation="fade-up" delay={index * 150} className="h-full">
                                     <ServiceCard 
                                         service={service} 
                                         lang={lang} 
-                                        index={index} 
+                                        index={0} // Index handled by ScrollReveal delay now
                                         onClick={handleServiceClick}
                                     />
-                                </div>
+                                </ScrollReveal>
                             ))}
                         </div>
                     </div>
                       
                     <div className="text-center mt-12 max-w-7xl mx-auto px-4">
-                        <button 
-                        onClick={() => handleNavigation('services')}
-                        className="inline-flex items-center gap-2 text-tertiary font-bold hover:text-primary transition-colors border-b-2 border-tertiary pb-1"
-                        >
-                            {isAr ? 'عرض جميع الخدمات' : 'View All Services'}
-                            <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
-                        </button>
+                        <ScrollReveal animation="zoom-in" delay={600}>
+                          <button 
+                          onClick={() => handleNavigation('services')}
+                          className="inline-flex items-center gap-2 text-tertiary font-bold hover:text-primary transition-colors border-b-2 border-tertiary pb-1"
+                          >
+                              {isAr ? 'عرض جميع الخدمات' : 'View All Services'}
+                              <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
+                          </button>
+                        </ScrollReveal>
                     </div>
                   </div>
 
+                  {/* Portfolio Section (New) */}
+                  <Portfolio lang={lang} />
+
                   {/* Blog Section */}
-                  <div className="py-24 bg-light relative">
+                  <div className="py-24 bg-light relative overflow-hidden">
                      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
                      <div className="absolute -left-20 top-20 text-[200px] text-gray-200 font-black opacity-20 pointer-events-none select-none">BLOG</div>
                      
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-                      <div className="flex flex-col md:flex-row justify-between items-end mb-12 animate-fade-in-up">
-                          <div className="text-center md:text-start">
-                            <h2 className="text-4xl font-extrabold text-primary mb-2">
-                            {isAr ? 'أحدث المقالات والأخبار' : 'Latest Articles & News'}
-                            </h2>
-                            <p className="mt-2 text-lg text-gray-500 max-w-2xl">
-                            {isAr ? 'ابق على اطلاع دائم بكل ما يخص قطاع الاستقدام والأنظمة الجديدة.' : 'Stay updated with everything related to the recruitment sector and new regulations.'}
-                            </p>
-                          </div>
-                          <button 
-                            onClick={() => handleNavigation('articles')}
-                            className="hidden md:flex items-center gap-2 text-white bg-tertiary px-6 py-3 rounded-full font-bold hover:bg-primary transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                          >
-                              {isAr ? 'عرض كل المقالات' : 'View All Articles'} <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
-                          </button>
-                      </div>
+                      <ScrollReveal animation="fade-right">
+                        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+                            <div className="text-center md:text-start">
+                              <h2 className="text-4xl font-extrabold text-primary mb-2">
+                              {isAr ? 'أحدث المقالات والأخبار' : 'Latest Articles & News'}
+                              </h2>
+                              <p className="mt-2 text-lg text-gray-500 max-w-2xl">
+                              {isAr ? 'ابق على اطلاع دائم بكل ما يخص قطاع الاستقدام والأنظمة الجديدة.' : 'Stay updated with everything related to the recruitment sector and new regulations.'}
+                              </p>
+                            </div>
+                            <button 
+                              onClick={() => handleNavigation('articles')}
+                              className="hidden md:flex items-center gap-2 text-white bg-tertiary px-6 py-3 rounded-full font-bold hover:bg-primary transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                            >
+                                {isAr ? 'عرض كل المقالات' : 'View All Articles'} <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
+                            </button>
+                        </div>
+                      </ScrollReveal>
                       
                       <div className="grid gap-8 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-12">
                         {mockArticles.map((article, index) => (
-                          <ArticleCard 
-                            key={article.id} 
-                            article={article} 
-                            lang={lang} 
-                            onClick={handleArticleClick}
-                            index={index}
-                          />
+                          <ScrollReveal key={article.id} animation="fade-up" delay={index * 200} className="h-full">
+                            <ArticleCard 
+                              article={article} 
+                              lang={lang} 
+                              onClick={handleArticleClick}
+                              index={0} // Animation handled by ScrollReveal
+                            />
+                          </ScrollReveal>
                         ))}
                       </div>
                       

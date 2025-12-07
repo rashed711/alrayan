@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
+import { APP_CONFIG } from '../constants';
 
 interface NavbarProps {
   lang: Language;
@@ -47,8 +48,9 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, activeTab, setActiveTab 
               className="flex-shrink-0 flex items-center cursor-pointer group z-50" 
               onClick={() => handleNavClick('home')}
             >
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center mr-3 ml-3 transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                 <span className="text-primary font-bold text-xl group-hover:text-tertiary transition-colors">W</span>
+              {/* LOGO IMAGE */}
+              <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mr-3 ml-3 transform group-hover:rotate-6 group-hover:scale-105 transition-all duration-300 shadow-lg p-1">
+                 <img src={APP_CONFIG.logo} alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-xl sm:text-2xl tracking-wider group-hover:text-tertiary transition-colors duration-300 transform group-hover:translate-x-1">
                 {isAr ? 'مكتب الريان' : 'Al-Rayan'}
@@ -128,7 +130,10 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, activeTab, setActiveTab 
         {/* Sidebar Header */}
         <div className="h-20 flex-shrink-0 flex items-center justify-between px-6 border-b border-white/10 bg-black/20">
            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white rounded flex items-center justify-center text-primary font-bold">W</div>
+              {/* MOBILE LOGO */}
+              <div className="w-8 h-8 bg-white rounded flex items-center justify-center p-1">
+                <img src={APP_CONFIG.logo} alt="Logo" className="w-full h-full object-contain" />
+              </div>
               <span className="font-bold text-lg text-white tracking-wider">
                 {isAr ? 'القائمة' : 'Menu'}
               </span>

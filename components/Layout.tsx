@@ -38,7 +38,10 @@ const Layout: React.FC<LayoutProps> = ({ children, lang, setLang, activeTab, onN
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-start mb-12">
                         <div className="flex flex-col items-center md:items-start animate-fade-in-up">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-primary font-bold text-2xl shadow-lg transform rotate-3 hover:rotate-0 transition-transform">W</div>
+                                    {/* FOOTER LOGO */}
+                                    <div className="w-14 h-14 bg-white rounded-lg flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform p-2">
+                                        <img src={APP_CONFIG.logo} alt="Logo" className="w-full h-full object-contain" />
+                                    </div>
                                     <span className="text-2xl font-bold">{isAr ? APP_CONFIG.siteName.ar : APP_CONFIG.siteName.en}</span>
                                 </div>
                                 <p className="text-gray-300 text-sm leading-relaxed max-w-xs mb-6">

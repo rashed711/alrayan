@@ -6,6 +6,9 @@ export const APP_CONFIG = {
     // Toggle this to true to immediately show a maintenance screen to users
     MAINTENANCE_MODE: false,
 
+    // Logo Configuration
+    logo: "https://cdn-icons-png.flaticon.com/512/3135/3135768.png", // Professional Globe/People Icon
+
     // General Site Info
     siteName: {
         ar: 'مكتب الريان للاستقدام',

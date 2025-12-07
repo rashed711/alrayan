@@ -1,6 +1,8 @@
+
 import React from 'react';
 import ArticleCard from './ArticleCard';
 import { Article, Language } from '../types';
+import ScrollReveal from './ScrollReveal';
 
 interface ArticlesPageProps {
   articles: Article[];
@@ -14,31 +16,34 @@ const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, lang, onArticleCl
   return (
     <div className="py-20 bg-light min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in-down">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-primary mb-6">
-            {isAr ? 'المدونة وآخر الأخبار' : 'Blog & Latest News'}
-          </h1>
-          <p className="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
-            {isAr 
-              ? 'تصفح مقالاتنا المفيدة لتعرف كل ما يخص العمالة المنزلية، الأنظمة، وحقوقك كعميل.'
-              : 'Browse our useful articles to know everything about domestic workers, regulations, and your rights as a client.'}
-          </p>
-        </div>
+        <ScrollReveal animation="fade-down">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-primary mb-6">
+              {isAr ? 'المدونة وآخر الأخبار' : 'Blog & Latest News'}
+            </h1>
+            <p className="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
+              {isAr 
+                ? 'تصفح مقالاتنا المفيدة لتعرف كل ما يخص العمالة المنزلية، الأنظمة، وحقوقك كعميل.'
+                : 'Browse our useful articles to know everything about domestic workers, regulations, and your rights as a client.'}
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-16">
           {articles.map((article, index) => (
-            <ArticleCard 
-              key={article.id} 
-              article={article} 
-              lang={lang} 
-              onClick={onArticleClick}
-              index={index}
-            />
+            <ScrollReveal key={article.id} animation="fade-up" delay={index * 150} className="h-full">
+              <ArticleCard 
+                article={article} 
+                lang={lang} 
+                onClick={onArticleClick}
+                index={0}
+              />
+            </ScrollReveal>
           ))}
         </div>
         
         {/* Pagination Dummy */}
-        <div className="mt-16 flex justify-center gap-2 animate-fade-in-up">
+        <ScrollReveal animation="fade-up" delay={400} className="mt-16 flex justify-center gap-2">
             <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-tertiary hover:text-white transition-colors disabled:opacity-50" disabled>
                 <i className={`fas fa-chevron-${isAr ? 'right' : 'left'}`}></i>
             </button>
@@ -48,7 +53,7 @@ const ArticlesPage: React.FC<ArticlesPageProps> = ({ articles, lang, onArticleCl
             <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-tertiary hover:text-white transition-colors">
                  <i className={`fas fa-chevron-${isAr ? 'left' : 'right'}`}></i>
             </button>
-        </div>
+        </ScrollReveal>
 
       </div>
     </div>

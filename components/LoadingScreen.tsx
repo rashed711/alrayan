@@ -39,18 +39,14 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ isLoading, lang }) => {
                     <div className="absolute inset-8 border border-white/10 rounded-full"></div>
 
                     {/* Logo Center */}
-                    <div className="w-14 h-14 bg-white rounded-full shadow-[0_0_30px_rgba(0,173,181,0.4)] flex items-center justify-center relative z-10 animate-pulse">
-                         <span className="text-[#0F2C59] font-black text-2xl">W</span>
+                    <div className="w-14 h-14 bg-white rounded-full shadow-[0_0_30px_rgba(0,173,181,0.4)] flex items-center justify-center relative z-10 animate-pulse p-2">
+                         <img src={APP_CONFIG.logo} alt="Logo" className="w-full h-full object-contain" />
                     </div>
                 </div>
             </div>
 
             {/* Text Section */}
             <div className="mt-10 text-center relative z-10">
-                <h2 className="text-white text-3xl font-bold tracking-wider mb-3 animate-fade-in-up drop-shadow-lg">
-                    {isAr ? APP_CONFIG.siteName.ar : APP_CONFIG.siteName.en}
-                </h2>
-                
                 <div className="flex items-center justify-center gap-2 bg-white/5 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10 mx-auto w-fit">
                     <span className="text-[#00ADB5] text-sm font-bold tracking-widest uppercase">
                         {isAr ? 'جاري التجهيز' : 'PROCESSING'}
