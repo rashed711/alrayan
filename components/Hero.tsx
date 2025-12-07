@@ -16,7 +16,7 @@ const Hero: React.FC<HeroProps> = ({ lang, settings, onNavigate }) => {
   const heroImages = [
     "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80", // Professional Business Woman
     "https://cdn.dubaiclean.com/uploads/2025/01/can-i-hire-a-maid-without-agency-in-dubai-3.webp", // Handshake
-    "https://www.miamilifestylevip.com/cdn/shop/products/Personal_Driver.jpg?v=1548923724", // Nanny/Care
+    "https://cdn-kgpfh.nitrocdn.com/wVjjlMwoZXkElalWmpVyuCdnIOPdWMRt/assets/images/optimized/rev-81cc462/muffettaprivatestaff.com/wp-content/uploads/2023/04/personal-driver-private-Chauffeur-elite-staffing.jpg", // Nanny/Care
     "https://cdn.dubaiclean.com/uploads/2025/01/can-i-hire-a-maid-without-agency-in-dubai-4.webp"  // Chef/Kitchen
   ];
 
