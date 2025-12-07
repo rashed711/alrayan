@@ -1,3 +1,6 @@
+/* @tailwind directives removed to prevent runtime errors in preview. 
+   Styles are handled by the CDN script in index.html */
+
 /* Global Styles */
 body {
   background-color: #F4F7F6; 

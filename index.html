@@ -7,10 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Tailwind CSS via CDN -->
+    <!-- Tailwind CDN for Immediate Rendering -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Tailwind Configuration -->
+    <!-- Embedded Tailwind Config -->
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -37,11 +37,12 @@
               'pulse-glow': 'pulseGlow 2s infinite',
               'zoom-in': 'zoomIn 0.5s ease-out forwards',
               'pop': 'pop 0.3s ease-out',
-              'shimmer': 'shimmer 1.5s infinite',
               'marquee': 'marquee 25s linear infinite',
               'ken-burns': 'kenBurns 10s ease-out infinite alternate',
               'scroll-infinite': 'scrollInfinite 30s linear infinite',
               'scroll-infinite-reverse': 'scrollInfiniteReverse 30s linear infinite',
+              'shimmer': 'shimmer 1.5s infinite',
+              'spin-slow': 'spin 8s linear infinite',
             },
             keyframes: {
               fadeInUp: {
@@ -81,10 +82,6 @@
                 '50%': { transform: 'scale(1.05)' },
                 '100%': { transform: 'scale(1)' },
               },
-              shimmer: {
-                '0%': { transform: 'translateX(-100%)' },
-                '100%': { transform: 'translateX(100%)' }
-              },
               marquee: {
                 '0%': { transform: 'translateX(0%)' },
                 '100%': { transform: 'translateX(-100%)' },
@@ -100,18 +97,23 @@
               scrollInfiniteReverse: {
                 '0%': { transform: 'translateX(-50%)' },
                 '100%': { transform: 'translateX(0)' },
+              },
+              shimmer: {
+                  '0%': { transform: 'translateX(-100%)' },
+                  '100%': { transform: 'translateX(100%)' }
               }
             }
           },
         },
       }
     </script>
-<script type="importmap">
+
+  <script type="importmap">
 {
   "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "react": "https://aistudiocdn.com/react@^19.2.1",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "vite": "https://aistudiocdn.com/vite@^7.2.6",
     "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
   }
