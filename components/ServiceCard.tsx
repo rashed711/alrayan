@@ -4,10 +4,10 @@ import { Service, Language } from '../types';
 interface ServiceCardProps {
   service: Service;
   lang: Language;
-  index: number;
+  index?: number;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ service, lang, index }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ service, lang, index = 0 }) => {
   const isAr = lang === 'ar';
 
   // Map service IDs to relevant Unsplash images
@@ -25,7 +25,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, lang, index }) => {
   return (
     <div 
         dir={isAr ? 'rtl' : 'ltr'}
-        className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-visible h-full flex flex-col transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl text-center w-full"
+        className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-visible h-full flex flex-col transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl text-center w-full animate-fade-in-up"
+        style={{ animationDelay: `${index * 0.1}s` }}
     >
       {/* Decorative Gradient Background on Hover - Using Theme Colors */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-tertiary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
