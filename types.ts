@@ -1,9 +1,14 @@
+
 export interface Service {
   id: number;
   title_ar: string;
   title_en: string;
   description_ar?: string;
   description_en?: string;
+  long_description_ar?: string;
+  long_description_en?: string;
+  features_ar?: string[];
+  features_en?: string[];
   icon?: string;
 }
 

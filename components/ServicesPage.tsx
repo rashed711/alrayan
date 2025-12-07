@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ServiceCard from './ServiceCard';
 import { Service, Language } from '../types';
@@ -5,9 +6,10 @@ import { Service, Language } from '../types';
 interface ServicesPageProps {
   services: Service[];
   lang: Language;
+  onServiceClick?: (service: Service) => void;
 }
 
-const ServicesPage: React.FC<ServicesPageProps> = ({ services, lang }) => {
+const ServicesPage: React.FC<ServicesPageProps> = ({ services, lang, onServiceClick }) => {
   const isAr = lang === 'ar';
 
   return (
@@ -24,9 +26,16 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ services, lang }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <ServiceCard key={service.id} service={service} lang={lang} index={index} />
+            <div key={service.id} className="h-full">
+                <ServiceCard 
+                    service={service} 
+                    lang={lang} 
+                    index={index} 
+                    onClick={onServiceClick}
+                />
+            </div>
           ))}
         </div>
         
