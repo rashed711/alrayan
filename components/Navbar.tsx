@@ -121,12 +121,12 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, activeTab, setActiveTab 
 
       {/* 2. Drawer Panel */}
       <div 
-        className={`fixed inset-y-0 h-full ${isAr ? 'left-0' : 'right-0'} z-[70] w-[85%] max-w-[300px] bg-[#1B3C53] shadow-2xl transform transition-transform duration-300 cubic-bezier(0.4, 0, 0.2, 1) md:hidden flex flex-col ${
+        className={`fixed inset-y-0 h-full ${isAr ? 'left-0' : 'right-0'} z-[70] w-[85%] max-w-[300px] bg-primary shadow-2xl transform transition-transform duration-300 cubic-bezier(0.4, 0, 0.2, 1) md:hidden flex flex-col ${
             isMobileMenuOpen ? 'translate-x-0' : (isAr ? '-translate-x-full' : 'translate-x-full')
         }`}
       >
         {/* Sidebar Header */}
-        <div className="h-20 flex-shrink-0 flex items-center justify-between px-6 border-b border-white/10 bg-[#163042]">
+        <div className="h-20 flex-shrink-0 flex items-center justify-between px-6 border-b border-white/10 bg-black/20">
            <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white rounded flex items-center justify-center text-primary font-bold">W</div>
               <span className="font-bold text-lg text-white tracking-wider">
@@ -182,7 +182,7 @@ const Navbar: React.FC<NavbarProps> = ({ lang, setLang, activeTab, setActiveTab 
         </div>
 
         {/* Sidebar Footer (Language Switch) */}
-        <div className="p-6 border-t border-white/10 bg-[#163042] flex-shrink-0">
+        <div className="p-6 border-t border-white/10 bg-black/20 flex-shrink-0">
            <button
               onClick={() => {
                   setLang(isAr ? 'en' : 'ar');

@@ -1,3 +1,4 @@
+
 export const sqlContent = `
 -- Database: recruitment_db
 
@@ -19,7 +20,7 @@ CREATE TABLE \`settings\` (
 
 -- Dumping data for table 'settings'
 INSERT INTO \`settings\` (\`site_name_ar\`, \`site_name_en\`, \`phone\`, \`email\`) VALUES
-('مكتب الريان للاستقدام', 'Al-Wasit Recruitment', '0500000000', 'info@Al-Rayan.net');
+('مكتب الريان للاستقدام', 'Al-Rayan Recruitment', '0500000000', 'info@Al-Rayan.net');
 
 -- --------------------------------------------------------
 

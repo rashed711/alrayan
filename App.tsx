@@ -8,6 +8,7 @@ import BackendViewer from './components/BackendViewer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
 import AboutPage from './components/AboutPage';
 import ServicesPage from './components/ServicesPage';
+import ArticlesPage from './components/ArticlesPage';
 import ContactPage from './components/ContactPage';
 import { mockSettings, mockServices, mockArticles } from './data/mockData';
 import { Language, Article } from './types';
@@ -17,53 +18,81 @@ function App() {
   const [lang, setLang] = useState<Language>('ar');
   const [activeTab, setActiveTab] = useState('home');
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  
+  // Loading State for Transitions
+  const [isLoading, setIsLoading] = useState(false);
+  const [showContent, setShowContent] = useState(true);
 
   const isAr = lang === 'ar';
 
+  // Professional Navigation Handler with Transition Effect
+  const handleNavigation = (tab: string, article: Article | null = null) => {
+    if (tab === activeTab && !article) return;
+
+    setIsLoading(true);
+    setShowContent(false);
+
+    // Wait for fade out, then switch content, then fade in
+    setTimeout(() => {
+        setActiveTab(tab);
+        setSelectedArticle(article);
+        window.scrollTo(0, 0);
+        
+        // Small delay to ensure render finishes before fading in loader
+        setTimeout(() => {
+            setIsLoading(false);
+            setShowContent(true);
+        }, 300);
+    }, 600); // Duration of the loading screen
+  };
+
   const handleArticleClick = (article: Article) => {
-    setSelectedArticle(article);
-    setActiveTab('article');
-    window.scrollTo(0, 0);
+    handleNavigation('article', article);
   };
 
   const handleBackToHome = () => {
-    setSelectedArticle(null);
-    setActiveTab('home');
-    window.scrollTo(0, 0);
+    handleNavigation('home');
   };
 
   const renderContent = () => {
+      // Content wrapper to help with fade transitions
+      const contentClass = `transition-opacity duration-500 ${showContent ? 'opacity-100' : 'opacity-0'}`;
+
       switch (activeTab) {
         case 'about':
-            return <AboutPage lang={lang} settings={mockSettings} />;
+            return <div className={contentClass}><AboutPage lang={lang} settings={mockSettings} /></div>;
         case 'services':
-            return <ServicesPage services={mockServices} lang={lang} />;
+            return <div className={contentClass}><ServicesPage services={mockServices} lang={lang} /></div>;
         case 'contact':
-            return <ContactPage lang={lang} settings={mockSettings} />;
+            return <div className={contentClass}><ContactPage lang={lang} settings={mockSettings} /></div>;
+        case 'articles':
+            return <div className={contentClass}><ArticlesPage articles={mockArticles} lang={lang} onArticleClick={handleArticleClick} /></div>;
         case 'backend':
-            return <BackendViewer lang={lang} />;
+            return <div className={contentClass}><BackendViewer lang={lang} /></div>;
         case 'article':
             return selectedArticle ? (
-                <ArticleDetail 
-                    article={selectedArticle} 
-                    lang={lang} 
-                    onBack={handleBackToHome}
-                />
+                <div className={contentClass}>
+                    <ArticleDetail 
+                        article={selectedArticle} 
+                        lang={lang} 
+                        onBack={handleBackToHome}
+                    />
+                </div>
             ) : <div />;
         case 'home':
         default:
             return (
-                <>
-                  <Hero lang={lang} settings={mockSettings} />
+                <div className={contentClass}>
+                  <Hero lang={lang} settings={mockSettings} onNavigate={handleNavigation} />
 
-                  {/* Services Section */}
+                  {/* Services Section - Static Grid */}
                   <div className="py-24 bg-white relative overflow-hidden">
                      {/* Decorative Background Elements */}
                      <div className="absolute top-0 left-0 w-64 h-64 bg-secondary/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
                      <div className="absolute bottom-0 right-0 w-96 h-96 bg-tertiary/5 rounded-full translate-x-1/2 translate-y-1/2"></div>
 
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                      <div className="text-center mb-16 animate-fade-in-up">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-12">
+                      <div className="text-center animate-fade-in-up">
                         <h2 className="text-sm text-tertiary font-bold tracking-wide uppercase mb-2 flex items-center justify-center gap-2">
                           <span className="w-8 h-[2px] bg-tertiary inline-block"></span>
                           {isAr ? 'خدماتنا' : 'Our Services'}
@@ -76,23 +105,27 @@ function App() {
                              {isAr ? 'نقدم مجموعة واسعة من الخدمات لتلبية جميع احتياجاتك' : 'We offer a wide range of services to meet all your needs'}
                         </p>
                       </div>
+                    </div>
 
-                      {/* Updated Grid for Mobile (2 cols) */}
-                      <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {mockServices.slice(0, 6).map((service, index) => (
-                          <ServiceCard key={service.id} service={service} lang={lang} index={index} />
-                        ))}
-                      </div>
+                    {/* Static Grid Layout */}
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                            {mockServices.map((service, index) => (
+                                <div key={service.id} className="h-full">
+                                    <ServiceCard service={service} lang={lang} index={index} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                       
-                      <div className="text-center mt-12">
-                          <button 
-                            onClick={() => { setActiveTab('services'); window.scrollTo(0,0); }}
-                            className="inline-flex items-center gap-2 text-tertiary font-bold hover:text-primary transition-colors border-b-2 border-tertiary pb-1"
-                          >
-                              {isAr ? 'عرض جميع الخدمات' : 'View All Services'}
-                              <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
-                          </button>
-                      </div>
+                    <div className="text-center mt-12 max-w-7xl mx-auto px-4">
+                        <button 
+                        onClick={() => handleNavigation('services')}
+                        className="inline-flex items-center gap-2 text-tertiary font-bold hover:text-primary transition-colors border-b-2 border-tertiary pb-1"
+                        >
+                            {isAr ? 'عرض جميع الخدمات' : 'View All Services'}
+                            <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
+                        </button>
                     </div>
                   </div>
 
@@ -114,7 +147,7 @@ function App() {
                             </p>
                           </div>
                           <button 
-                            onClick={() => { /* In a real app this would go to a blog list page */ }}
+                            onClick={() => handleNavigation('articles')}
                             className="hidden md:flex items-center gap-2 text-white bg-tertiary px-6 py-3 rounded-full font-bold hover:bg-primary transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                           >
                               {isAr ? 'عرض كل المقالات' : 'View All Articles'} <i className={`fas fa-arrow-${isAr ? 'left' : 'right'}`}></i>
@@ -127,41 +160,58 @@ function App() {
                             key={article.id} 
                             article={article} 
                             lang={lang} 
-                            onClick={handleArticleClick}
+                            onClick={(article) => handleNavigation('article', article)}
                             index={index}
                           />
                         ))}
                       </div>
                       
                        <div className="md:hidden mt-10 text-center">
-                          <button className="text-white bg-tertiary px-6 py-3 rounded-full font-bold shadow-lg w-full">
+                          <button 
+                             onClick={() => handleNavigation('articles')}
+                             className="text-white bg-tertiary px-6 py-3 rounded-full font-bold shadow-lg w-full"
+                          >
                               {isAr ? 'عرض كل المقالات' : 'View All Articles'}
                           </button>
                       </div>
                     </div>
                   </div>
-                </>
+                </div>
             );
       }
   };
 
   return (
     <div className={`min-h-screen bg-light ${isAr ? 'font-sans' : 'font-sans'}`} dir={isAr ? 'rtl' : 'ltr'}>
+      
+      {/* PROFESSIONAL LOADING OVERLAY */}
+      <div className={`fixed inset-0 z-[1000] bg-primary flex flex-col items-center justify-center transition-opacity duration-500 ${isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+         <div className="relative mb-4">
+             {/* Spinning Rings */}
+             <div className="absolute inset-0 border-4 border-tertiary/30 rounded-full animate-[spin_3s_linear_infinite]"></div>
+             <div className="absolute inset-0 border-t-4 border-white rounded-full animate-[spin_1.5s_linear_infinite]"></div>
+             
+             {/* Logo */}
+             <div className="w-20 h-20 flex items-center justify-center bg-white rounded-full shadow-2xl relative z-10 animate-pulse">
+                <span className="text-3xl font-bold text-primary">W</span>
+             </div>
+         </div>
+         <div className="text-white text-lg font-bold tracking-widest animate-pulse">
+             {isAr ? 'جاري التحميل...' : 'LOADING...'}
+         </div>
+      </div>
+
       <Navbar 
         lang={lang} 
         setLang={setLang} 
         activeTab={activeTab === 'article' ? 'home' : activeTab}
-        setActiveTab={(tab) => {
-            setActiveTab(tab);
-            if(tab !== 'article') setSelectedArticle(null);
-            window.scrollTo(0,0);
-        }}
+        setActiveTab={(tab) => handleNavigation(tab)}
       />
 
       {renderContent()}
 
       {/* Footer Contact Info - Always Visible */}
-      <div className="bg-[#1B3C53] text-white pt-16 pb-8 border-t-8 border-tertiary relative overflow-hidden">
+      <div className="bg-primary text-white pt-16 pb-8 border-t-8 border-tertiary relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-30"></div>
 
@@ -199,10 +249,10 @@ function App() {
                         <span className="absolute bottom-0 left-0 w-1/2 h-1 bg-tertiary rounded-full"></span>
                     </h3>
                     <ul className="space-y-4 text-gray-300">
-                        <li><button onClick={() => { setActiveTab('home'); window.scrollTo(0,0); }} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'الرئيسية' : 'Home'}</button></li>
-                        <li><button onClick={() => { setActiveTab('services'); window.scrollTo(0,0); }} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'خدماتنا' : 'Services'}</button></li>
-                        <li><button onClick={() => { setActiveTab('about'); window.scrollTo(0,0); }} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'من نحن' : 'About Us'}</button></li>
-                        <li><button onClick={() => { setActiveTab('contact'); window.scrollTo(0,0); }} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'اتصل بنا' : 'Contact'}</button></li>
+                        <li><button onClick={() => handleNavigation('home')} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'الرئيسية' : 'Home'}</button></li>
+                        <li><button onClick={() => handleNavigation('services')} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'خدماتنا' : 'Services'}</button></li>
+                        <li><button onClick={() => handleNavigation('about')} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'من نحن' : 'About Us'}</button></li>
+                        <li><button onClick={() => handleNavigation('contact')} className="hover:text-tertiary hover:translate-x-2 transition-all block flex items-center gap-2"><i className="fas fa-chevron-right text-xs"></i> {isAr ? 'اتصل بنا' : 'Contact'}</button></li>
                     </ul>
                 </div>
                 

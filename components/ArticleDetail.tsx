@@ -15,8 +15,34 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, lang, onBack }) 
     window.scrollTo(0, 0);
   }, []);
 
+  // Handle Social Sharing
+  const handleShare = (platform: 'facebook' | 'twitter' | 'whatsapp') => {
+    // In a real deployed app, this would be the specific URL of the article.
+    // For this demo, we use the current page URL.
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(isAr ? article.title_ar : article.title_en);
+    
+    let shareUrl = '';
+    let windowFeatures = 'width=600,height=400,scrollbars=yes,resizable=yes';
+
+    switch (platform) {
+        case 'facebook':
+            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            break;
+        case 'twitter':
+            shareUrl = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+            break;
+        case 'whatsapp':
+            // WhatsApp usually opens in a new tab/app, so window size matters less
+            shareUrl = `https://wa.me/?text=${title}%20${url}`;
+            break;
+    }
+
+    window.open(shareUrl, '_blank', windowFeatures);
+  };
+
   return (
-    <div className="bg-white min-h-screen pb-12 animate-fade-in">
+    <div className="bg-white min-h-screen pb-12 animate-fade-in" dir={isAr ? 'rtl' : 'ltr'}>
       {/* Article Header Image */}
       <div className="relative h-64 md:h-96 w-full overflow-hidden">
         <div className="absolute inset-0 bg-primary/40 z-10"></div>
@@ -30,7 +56,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, lang, onBack }) 
                 onClick={onBack}
                 className="bg-white/20 backdrop-blur-md border border-white/30 text-white px-4 py-2 rounded-full hover:bg-white/40 transition-colors flex items-center gap-2 font-bold"
             >
-                <span className={isAr ? "rotate-180" : ""}>&larr;</span> {isAr ? 'العودة للمقالات' : 'Back to Articles'}
+                <i className={`fas fa-arrow-${isAr ? 'right' : 'left'}`}></i> {isAr ? 'العودة للمقالات' : 'Back to Articles'}
             </button>
         </div>
       </div>
@@ -55,8 +81,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, lang, onBack }) 
                 {/* SEO: Rendering HTML content. In a real app we'd sanitize this. */}
                 <div dangerouslySetInnerHTML={{ __html: isAr ? article.content_ar : article.content_en }} />
                 
-                <p className="mt-6">
-                    {/* Dummy extra content to make the page look full */}
+                <p className="mt-6 bg-light p-6 rounded-lg border-r-4 border-tertiary italic text-gray-700">
+                    {/* Professional disclaimer/CTA */}
                     {isAr 
                      ? 'للمزيد من المعلومات حول هذا الموضوع، يمكنك التواصل مع فريق خدمة العملاء لدينا. نحن هنا لمساعدتك في اتخاذ القرارات الصحيحة بشأن العمالة المنزلية.'
                      : 'For more information on this topic, feel free to contact our customer support team. We are here to help you make the right decisions regarding domestic workers.'}
@@ -64,11 +90,38 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, lang, onBack }) 
             </div>
             
             <div className="mt-12 pt-8 border-t border-gray-200">
-                <h3 className="text-xl font-bold text-primary mb-4">{isAr ? 'شارك المقال' : 'Share Article'}</h3>
-                <div className="flex space-x-4 space-x-reverse">
-                    <button className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:opacity-80 transition">f</button>
-                    <button className="w-10 h-10 rounded-full bg-sky-400 text-white flex items-center justify-center hover:opacity-80 transition">t</button>
-                    <button className="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center hover:opacity-80 transition">w</button>
+                <h3 className="text-xl font-bold text-primary mb-6 flex items-center gap-2">
+                    <i className="fas fa-share-alt text-tertiary"></i>
+                    {isAr ? 'شارك هذا المقال' : 'Share this Article'}
+                </h3>
+                
+                <div className="flex flex-wrap gap-4">
+                    {/* Facebook Button */}
+                    <button 
+                        onClick={() => handleShare('facebook')}
+                        className="group flex items-center gap-3 px-6 py-3 rounded-full bg-[#1877F2] text-white font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/30"
+                    >
+                        <i className="fab fa-facebook-f text-xl group-hover:scale-110 transition-transform"></i>
+                        <span>Facebook</span>
+                    </button>
+
+                    {/* Twitter Button */}
+                    <button 
+                        onClick={() => handleShare('twitter')}
+                        className="group flex items-center gap-3 px-6 py-3 rounded-full bg-[#1DA1F2] text-white font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-500/30"
+                    >
+                        <i className="fab fa-twitter text-xl group-hover:scale-110 transition-transform"></i>
+                        <span>Twitter</span>
+                    </button>
+
+                    {/* WhatsApp Button */}
+                    <button 
+                        onClick={() => handleShare('whatsapp')}
+                        className="group flex items-center gap-3 px-6 py-3 rounded-full bg-[#25D366] text-white font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/30"
+                    >
+                        <i className="fab fa-whatsapp text-xl group-hover:scale-110 transition-transform"></i>
+                        <span>WhatsApp</span>
+                    </button>
                 </div>
             </div>
         </div>

@@ -11,10 +11,10 @@ export default {
         sans: ['Cairo', 'sans-serif'],
       },
       colors: {
-        primary: '#1B3C53', // Deep Navy
-        secondary: '#234C6A', // Medium Navy
-        tertiary: '#456882', // Steel Blue
-        light: '#E3E3E3', // Light Gray / Off-white
+        primary: '#0F2C59', // Deep Royal Navy (New)
+        secondary: '#3282B8', // Bright Ocean Blue (New)
+        tertiary: '#00ADB5', // Vibrant Cyan (New - Cheerful)
+        light: '#F4F7F6', // Cool Mint White (New - Modern Background)
         white: '#ffffff',
       },
       animation: {
@@ -28,6 +28,11 @@ export default {
         'pulse-glow': 'pulseGlow 2s infinite',
         'zoom-in': 'zoomIn 0.5s ease-out forwards',
         'pop': 'pop 0.3s ease-out',
+        'marquee': 'marquee 25s linear infinite',
+        'ken-burns': 'kenBurns 10s ease-out infinite alternate',
+        'scroll-infinite': 'scrollInfinite 30s linear infinite',
+        'scroll-infinite-reverse': 'scrollInfiniteReverse 30s linear infinite',
+        'shimmer': 'shimmer 1.5s infinite',
       },
       keyframes: {
         fadeInUp: {
@@ -55,8 +60,8 @@ export default {
           '50%': { transform: 'translateY(-20px)' },
         },
         pulseGlow: {
-          '0%, 100%': { opacity: '1', boxShadow: '0 0 0 0px rgba(69, 104, 130, 0.7)' },
-          '50%': { opacity: '1', boxShadow: '0 0 0 10px rgba(69, 104, 130, 0)' },
+          '0%, 100%': { opacity: '1', boxShadow: '0 0 0 0px rgba(0, 173, 181, 0.7)' }, // Updated to match Cyan
+          '50%': { opacity: '1', boxShadow: '0 0 0 10px rgba(0, 173, 181, 0)' },
         },
         zoomIn: {
           '0%': { opacity: '0', transform: 'scale(0.9)' },
@@ -66,6 +71,26 @@ export default {
           '0%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.05)' },
           '100%': { transform: 'scale(1)' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+        kenBurns: {
+          '0%': { transform: 'scale(1)' },
+          '100%': { transform: 'scale(1.15)' },
+        },
+        scrollInfinite: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        scrollInfiniteReverse: {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        shimmer: {
+            '0%': { transform: 'translateX(-100%)' },
+            '100%': { transform: 'translateX(100%)' }
         }
       }
     },
