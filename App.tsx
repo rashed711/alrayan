@@ -22,26 +22,51 @@ function App() {
   // Global State
   const [lang, setLang] = useState<Language>('ar');
   
-  // Helper to extract valid tab from URL robustly
-  const getTabFromUrl = () => {
-    if (typeof window === 'undefined') return 'home';
-    
-    // Split path by '/' and filter out empty strings
-    // This handles cases like /about, /about/, /repo/about, etc.
-    const pathSegments = window.location.pathname.split('/').filter(Boolean);
-    
-    // Get the last segment
-    const lastSegment = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : 'home';
-    
-    const validTabs = ['about', 'services', 'contact', 'articles', 'backend'];
-    return validTabs.includes(lastSegment) ? lastSegment : 'home';
+  // --- Enhanced URL Parsing Logic ---
+  const getInitialStateFromUrl = () => {
+    if (typeof window === 'undefined') return { tab: 'home', service: null, article: null };
+
+    const path = window.location.pathname;
+    // Split path into segments and remove empty strings
+    const segments = path.split('/').filter(Boolean);
+
+    // 1. Check for Service Detail (e.g., /service/1)
+    // We look for the 'service' keyword and check if the NEXT segment is a number
+    const serviceIndex = segments.indexOf('service');
+    if (serviceIndex !== -1 && segments[serviceIndex + 1]) {
+        const id = parseInt(segments[serviceIndex + 1]);
+        const service = mockServices.find(s => s.id === id);
+        if (service) return { tab: 'service', service: service, article: null };
+    }
+
+    // 2. Check for Article Detail (e.g., /article/1)
+    const articleIndex = segments.indexOf('article');
+    if (articleIndex !== -1 && segments[articleIndex + 1]) {
+        const id = parseInt(segments[articleIndex + 1]);
+        const article = mockArticles.find(a => a.id === id);
+        if (article) return { tab: 'article', service: null, article: article };
+    }
+
+    // 3. Check for Standard Pages (about, contact, etc.)
+    // We iterate backwards to find the most relevant "tab" name in the URL
+    // This handles subdirectories like /my-repo/about correctly
+    const validTabs = ['about', 'services', 'contact', 'articles', 'backend', 'home'];
+    for (let i = segments.length - 1; i >= 0; i--) {
+        if (validTabs.includes(segments[i])) {
+            return { tab: segments[i], service: null, article: null };
+        }
+    }
+
+    // Default to home
+    return { tab: 'home', service: null, article: null };
   };
 
-  // Initialize activeTab based on current URL path
-  const [activeTab, setActiveTab] = useState(getTabFromUrl);
+  // Initialize state based on the URL analysis
+  const initialState = getInitialStateFromUrl();
 
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [activeTab, setActiveTab] = useState(initialState.tab);
+  const [selectedService, setSelectedService] = useState<Service | null>(initialState.service);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(initialState.article);
   
   // Transitions
   const [isLoading, setIsLoading] = useState(false);
@@ -52,14 +77,21 @@ function App() {
   // Handle Browser Back/Forward Buttons
   useEffect(() => {
     const handlePopState = () => {
-      const newTab = getTabFromUrl();
-      setActiveTab(newTab);
+      // Re-analyze URL when user presses Back/Forward
+      const newState = getInitialStateFromUrl();
       
-      // Clear selections if returning to main pages
-      if (!['article', 'service'].includes(newTab)) {
-        setSelectedArticle(null);
-        setSelectedService(null);
-      }
+      setIsLoading(true);
+      setShowContent(false);
+
+      setTimeout(() => {
+          setActiveTab(newState.tab);
+          setSelectedService(newState.service);
+          setSelectedArticle(newState.article);
+          
+          window.scrollTo(0, 0);
+          setIsLoading(false);
+          setShowContent(true);
+      }, 300);
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -90,24 +122,37 @@ function App() {
 
   // Navigation Logic
   const handleNavigation = (tab: string, item?: Article | Service | null) => {
+    // Prevent reloading same tab/item
     if (tab === activeTab && !item) return;
+    if (tab === 'service' && selectedService?.id === (item as Service)?.id) return;
+    if (tab === 'article' && selectedArticle?.id === (item as Article)?.id) return;
 
     setIsLoading(true);
     setShowContent(false);
 
     // Update URL History
-    if (tab !== 'article' && tab !== 'service') {
-        // Construct new URL preserving base path if possible, or relative
-        const url = tab === 'home' ? './' : `./${tab}`;
-        // Using pushState with a relative path works better for subdirectories
-        // But for absolute clarity in this demo, let's try to simulate the path
-        // We won't force a hard reload, just a state push
-        try {
-           window.history.pushState({}, '', tab === 'home' ? '/' : `/${tab}`);
-        } catch (e) {
-           // Fallback for some environments
-           console.log('Navigation updated state only');
-        }
+    let newUrl = '/';
+    
+    // Construct the correct URL based on the action
+    if (tab === 'home') {
+        newUrl = './'; // Relative path for home
+    } else if (tab === 'service' && item) {
+        newUrl = `./service/${item.id}`; // Deep link for service
+    } else if (tab === 'article' && item) {
+        newUrl = `./article/${item.id}`; // Deep link for article
+    } else {
+        newUrl = `./${tab}`; // Standard page link
+    }
+
+    try {
+        // Use pushState with the constructed URL
+        // We use relative paths (./) to play nicely with subdirectories if possible,
+        // but for deep links, we might need to handle the base path carefully in a real deployment.
+        // For this demo, we assume the router handles it via the browser URL bar.
+        const state = { tab, itemId: item?.id };
+        window.history.pushState(state, '', newUrl);
+    } catch (e) {
+        console.log('Navigation updated state only (URL update failed)');
     }
 
     setTimeout(() => {
